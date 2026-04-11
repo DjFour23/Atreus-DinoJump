@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+
+:root {
+  /* Usamos una fuente divertida para todo el proyecto */
+  font-family: 'Luckiest Guy', cursive, system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  /* Evitamos que el usuario pueda seleccionar texto o imágenes (se siente más como un juego) */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: block; /* Quitamos el flex de Vite para que no rompa nuestro diseño */
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: #DFF5E7; /* El color de fondo de la invitación */
+  overflow: hidden; /* Evita que salgan barras de scroll innecesarias */
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Animación de pulso para el tiempo cuando se acaba */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* Estilo global para links dentro del juego */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Reset de botones para que no usen el estilo gris de Vite */
+button {
+  font-family: 'Luckiest Guy', cursive;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+button:focus {
+  outline: none;
+}

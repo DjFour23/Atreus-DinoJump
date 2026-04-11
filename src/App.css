@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+
+* { box-sizing: border-box; user-select: none; }
+
+body, html {
+  margin: 0; padding: 0;
+  background-color: #E2F0DE; 
+  font-family: 'Nunito', sans-serif;
+  overflow: hidden; height: 100vh; width: 100vw;
+}
+
+.game-container {
+  display: flex; flex-direction: column; height: 100vh; width: 100vw; position: relative;
+}
+
+/* --- HUD --- */
+.hud {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 15px 5%; background-color: #2D4F36; color: white; z-index: 20;
+}
+.game-title { font-family: 'Luckiest Guy', cursive; font-size: 28px; margin: 0; letter-spacing: 2px;}
+.timer { font-family: 'Luckiest Guy', cursive; font-size: 22px;}
+.timer.alert { color: #FF4D4D; animation: pulse 1s infinite; }
+
+/* --- ESCENA PRINCIPAL --- */
+.scene {
+  flex-grow: 1; position: relative; width: 100%; max-width: 1200px; margin: 0 auto;
+  perspective: 1000px;
+}
+
+/* --- PLATAFORMAS DINÁMICAS (CUBOS LISOS Y PERFECTOS) --- */
+.platforms-container {
+  position: absolute; width: 100%; height: 100%; bottom: 0;
+}
+
+.platform {
+  --size: clamp(70px, 12vw, 120px); 
+  --depth: clamp(50px, 8vw, 80px);  
+  
+  /* Posicionamiento dinámico basado en las coordenadas (col, row) */
+  position: absolute; 
+  width: var(--size); height: var(--size);
+  left: calc(50% + (var(--col) * 14%) - (var(--size) / 2));
+  bottom: calc(15% + (var(--row) * 13%));
+  
+  transform: rotateX(60deg) rotateZ(-45deg);
+  transform-style: preserve-3d;
+  /* El z-index disminuye a medida que subimos filas para que las de abajo se vean delante */
+  z-index: calc(10 - var(--row)); 
+}
+
+.cube-top {
+  position: absolute; width: 100%; height: 100%;
+  background: #7FB08A; border: 4px solid #5C8C67; border-radius: 4px;
+}
+.cube-front {
+  position: absolute; top: 100%; left: -2px; width: calc(100% + 4px); height: var(--depth);
+  background: #E8DECD; border: 2px solid #D4C9B5; border-top: none;
+  transform-origin: top; transform: rotateX(-90deg);
+  border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;
+}
+.cube-right {
+  position: absolute; top: -2px; left: 100%; width: var(--depth); height: calc(100% + 4px);
+  background: #D4C9B5; border: 2px solid #C5BAA6; border-left: none;
+  transform-origin: left; transform: rotateY(90deg);
+  border-bottom-right-radius: 10px;
+}
+.pattern-goal { background: repeating-conic-gradient(#1a1a1a 0% 25%, #fff 0% 50%) 50% / 20px 20px; }
+
+/* --- CARTEL FLOTANTE --- */
+.floating-num {
+  position: absolute; top: 15%; left: 15%; width: 40px; height: 40px;
+  background: #C4A484; border: 3px solid #8B5A2B; border-radius: 8px;
+  display: flex; justify-content: center; align-items: center;
+  font-family: 'Luckiest Guy', cursive; font-size: 24px; color: #5C3A21;
+  transform: rotateZ(45deg) rotateX(-60deg) translateZ(60px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+}
+.banner-goal { background: #2D4F36; color: white; border-color: #1a1a1a; font-size: 20px; }
+
+/* --- DINOSAURIO Y ANIMACIONES --- */
+.dino-player {
+  position: absolute; width: clamp(70px, 12vw, 130px);
+  
+  /* Sigue exactamente el mismo cálculo que la plataforma */
+  left: calc(50% + (var(--col) * 14%));
+  bottom: calc(15% + (var(--row) * 13%));
+  
+  /* Centrado manual sobre la tapa del cubo */
+  margin-left: calc(clamp(70px, 12vw, 130px) * -0.5); 
+  margin-bottom: calc(clamp(70px, 12vw, 130px) * 0.4);
+  
+  transition: left 0.6s linear, bottom 0.6s linear; 
+  z-index: 20;
+}
+.dino-player img { width: 100%; height: auto; display: block; filter: drop-shadow(0px 20px 10px rgba(0,0,0,0.4)); }
+
+/* Parábola perfecta (Sube y baja) */
+.jumping-arc { animation: jumpArc 0.6s cubic-bezier(0.1, 0.7, 0.9, 0.1); }
+@keyframes jumpArc {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-150px) scale(1.15); } 
+  100% { transform: translateY(0); }
+}
+
+/* Animación de caída al vacío */
+.dino-player.falling {
+  bottom: -20%; /* Cae fuera de la pantalla */
+  transform: scale(0.5) rotate(180deg);
+  opacity: 0;
+  transition: all 0.6s ease-in;
+}
+
+/* --- CONTROLES BOTTOM --- */
+.controls {
+  position: fixed; bottom: 0; width: 100%; padding: 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 15px;
+  background: linear-gradient(to top, rgba(226,240,222,1) 0%, rgba(226,240,222,0) 100%); z-index: 30;
+}
+/* La cuadrícula de 2x2 */
+.btn-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px;
+}
+.btn-saltar {
+  flex: 1;
+  background-color: #E5D9C5; color: #2D4F36; font-family: 'Luckiest Guy', cursive; font-size: 20px;
+  padding: 12px 0; border-radius: 20px; border: 4px solid #2D4F36; box-shadow: 0 8px 0 #2D4F36;
+  cursor: pointer; transition: all 0.1s;
+}
+.btn-saltar:active:not(:disabled) { box-shadow: 0 0 0 #2D4F36; transform: translateY(8px); }
+.btn-saltar:disabled { background-color: #aaa; border-color: #666; box-shadow: 0 8px 0 #666; }
+
+/* Nuevo botón para llamar la invitación */
+.btn-invitacion {
+  background-color: #5FB1A8; color: white; font-family: 'Luckiest Guy', cursive; font-size: 20px;
+  padding: 12px 30px; border-radius: 20px; border: 3px solid #2D4F36; box-shadow: 0 5px 0 #2D4F36;
+  cursor: pointer; transition: all 0.1s;
+}
+.btn-invitacion:active { box-shadow: 0 0 0 #2D4F36; transform: translateY(5px); }
+
+/* --- MODAL --- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 100; padding: 20px;
+}
+.modal-box {
+  position: relative; background: #DFF5E7; border-radius: 20px; padding: 30px 20px 20px; width: 100%; max-width: 400px;
+  border: 5px solid #2D4F36; display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.btn-cerrar {
+  position: absolute; top: 10px; right: 15px; background: transparent; border: none; font-family: 'Luckiest Guy', cursive;
+  font-size: 28px; color: #FF4D4D; cursor: pointer; padding: 0;
+}
+.modal-title { font-family: 'Luckiest Guy', cursive; font-size: 32px; color: #2D4F36; margin: 0 0 10px 0; }
+.modal-msg { font-weight: 900; color: #333; margin: 0 0 15px 0; }
+.modal-img { width: 100%; max-height: 40vh; object-fit: contain; border-radius: 10px; border: 3px solid #1a1a1a; margin-bottom: 15px; background: white;}
+.modal-buttons { display: flex; gap: 10px; width: 100%; }
+.btn-action {
+  flex: 1; padding: 12px; font-weight: 900; text-decoration: none; text-align: center; border-radius: 10px;
+  color: white; background-color: #5FB1A8; border: 2px solid #3a756f;
+}
+.btn-action.confirm { background-color: #E5D9C5; color: #2D4F36; border-color: #b3a693; }
+
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.1); } }
