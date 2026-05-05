@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css'; 
 
-const INVITATION_IMAGE_URL = '/invitacion.jpg'; 
-const DINO_SPRITE_URL = '/dino.png'; 
-const GOOGLE_MAPS_LINK = 'https://maps.app.goo.gl/TuDireccionReal';
-const GOOGLE_FORM_LINK = 'https://forms.gle/TuFormularioReal';
+const INVITATION_IMAGE_URL = '/invitacion.png';
+const DINO_SPRITE_URL = '/dino.png';
+const GOOGLE_MAPS_LINK = 'https://maps.app.goo.gl/akxNnDdtDurqgDP26';
+const GOOGLE_FORM_LINK = 'https://forms.gle/fpcLHfUo1pVQKZi5A';
 
 // Mapa de nuestra pirámide. (0,0) es el inicio.
 const PLATFORMS = [
