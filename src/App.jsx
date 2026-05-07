@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css'; 
 
-const INVITATION_IMAGE_URL = '/invitacion2.png';
+const INVITATION_IMAGE_URL = '/invitacion3.png';
 // const DINO_SPRITE_URL = '/dino.png';
 const DINO_SPRITE_URL = '/hamster.png';
 const GOOGLE_MAPS_LINK = 'https://maps.app.goo.gl/akxNnDdtDurqgDP26';
